@@ -1,7 +1,8 @@
 [
   {
     "name": "trap",
-    "description": "Trap",
+    "description": "Panic immediately without further changes to machine state",
+    "mutations": "\\varepsilon = \\panic",
     "opcode": 0,
     "category": "Z",
     "categoryDescription": "Instructions without arguments",
@@ -10,7 +11,8 @@
   },
   {
     "name": "fallthrough",
-    "description": "Fallthrough",
+    "description": "No operation - continue to next instruction",
+    "mutations": "",
     "opcode": 1,
     "category": "Z",
     "categoryDescription": "Instructions without arguments",
@@ -19,7 +21,8 @@
   },
   {
     "name": "ecalli",
-    "description": "Host call with immediate",
+    "description": "Host call with immediate host-call identifier",
+    "mutations": "\\varepsilon = \\host \\times \\immed_X",
     "opcode": 10,
     "category": "I",
     "categoryDescription": "Instructions with arguments of one immediate",
@@ -33,7 +36,8 @@
   },
   {
     "name": "load_imm_64",
-    "description": "Load immediate 64",
+    "description": "Load 64-bit immediate value into register",
+    "mutations": "\\reg'_A = \\immed_X",
     "opcode": 20,
     "category": "REI",
     "categoryDescription": "Instructions with arguments of one register and one extended width immediate",
@@ -51,7 +55,8 @@
   },
   {
     "name": "store_imm_u8",
-    "description": "Store immediate u8",
+    "description": "Store immediate 8-bit value at memory address",
+    "mutations": "\\memwr_{\\immed_X} = \\immed_Y \\bmod 2^8",
     "opcode": 30,
     "category": "II",
     "categoryDescription": "Instructions with arguments of two immediates",
@@ -65,7 +70,8 @@
   },
   {
     "name": "store_imm_u16",
-    "description": "Store immediate u16",
+    "description": "Store immediate 16-bit value at memory address (little-endian)",
+    "mutations": "\\memwr_{\\immed_X\\dots+2} = \\se_2(\\immed_Y \\bmod 2^{16})",
     "opcode": 31,
     "category": "II",
     "categoryDescription": "Instructions with arguments of two immediates",
@@ -79,7 +85,8 @@
   },
   {
     "name": "store_imm_u32",
-    "description": "Store immediate u32",
+    "description": "Store immediate 32-bit value at memory address (little-endian)",
+    "mutations": "\\memwr_{\\immed_X\\dots+4} = \\se_4(\\immed_Y \\bmod 2^{32})",
     "opcode": 32,
     "category": "II",
     "categoryDescription": "Instructions with arguments of two immediates",
@@ -93,7 +100,8 @@
   },
   {
     "name": "store_imm_u64",
-    "description": "Store immediate u64",
+    "description": "Store immediate 64-bit value at memory address (little-endian)",
+    "mutations": "\\memwr_{\\immed_X\\dots+8} = \\se_8(\\immed_Y)",
     "opcode": 33,
     "category": "II",
     "categoryDescription": "Instructions with arguments of two immediates",
@@ -107,7 +115,8 @@
   },
   {
     "name": "jump",
-    "description": "Jump",
+    "description": "Unconditional jump to offset from current instruction",
+    "mutations": "\\token{branch}(\\immed_X, \\top)",
     "opcode": 40,
     "category": "O",
     "categoryDescription": "Instructions with arguments of one offset",
@@ -121,7 +130,8 @@
   },
   {
     "name": "jump_ind",
-    "description": "Jump indirect",
+    "description": "Dynamic jump using register value plus immediate as jump table index",
+    "mutations": "\\token{djump}((\\reg_A + \\immed_X) \\bmod 2^{32})",
     "opcode": 50,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -139,7 +149,8 @@
   },
   {
     "name": "load_imm",
-    "description": "Load immediate",
+    "description": "Load sign-extended immediate value into register",
+    "mutations": "\\reg'_A = \\immed_X",
     "opcode": 51,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -157,7 +168,8 @@
   },
   {
     "name": "load_u8",
-    "description": "Load u8",
+    "description": "Load unsigned 8-bit value from memory into register",
+    "mutations": "\\reg'_A = \\memr_{\\immed_X}",
     "opcode": 52,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -175,7 +187,8 @@
   },
   {
     "name": "load_i8",
-    "description": "Load i8",
+    "description": "Load signed 8-bit value from memory into register (sign-extended)",
+    "mutations": "\\reg'_A = \\sext_1(\\memr_{\\immed_X})",
     "opcode": 53,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -193,7 +206,8 @@
   },
   {
     "name": "load_u16",
-    "description": "Load u16",
+    "description": "Load unsigned 16-bit value from memory into register (little-endian)",
+    "mutations": "\\reg'_A = \\de_2(\\memr_{\\immed_X\\dots+2})",
     "opcode": 54,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -211,7 +225,8 @@
   },
   {
     "name": "load_i16",
-    "description": "Load i16",
+    "description": "Load signed 16-bit value from memory into register (little-endian, sign-extended)",
+    "mutations": "\\reg'_A = \\sext_2(\\de_2(\\memr_{\\immed_X\\dots+2}))",
     "opcode": 55,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -229,7 +244,8 @@
   },
   {
     "name": "load_u32",
-    "description": "Load u32",
+    "description": "Load unsigned 32-bit value from memory into register (little-endian)",
+    "mutations": "\\reg'_A = \\de_4(\\memr_{\\immed_X\\dots+4})",
     "opcode": 56,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -247,7 +263,8 @@
   },
   {
     "name": "load_i32",
-    "description": "Load i32",
+    "description": "Load signed 32-bit value from memory into register (little-endian, sign-extended)",
+    "mutations": "\\reg'_A = \\sext_4(\\de_4(\\memr_{\\immed_X\\dots+4}))",
     "opcode": 57,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -265,7 +282,8 @@
   },
   {
     "name": "load_u64",
-    "description": "Load u64",
+    "description": "Load 64-bit value from memory into register (little-endian)",
+    "mutations": "\\reg'_A = \\de_8(\\memr_{\\immed_X\\dots+8})",
     "opcode": 58,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -283,7 +301,8 @@
   },
   {
     "name": "store_u8",
-    "description": "Store u8",
+    "description": "Store register's low 8 bits to memory address",
+    "mutations": "\\memwr_{\\immed_X} = \\reg_A \\bmod 2^8",
     "opcode": 59,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -301,7 +320,8 @@
   },
   {
     "name": "store_u16",
-    "description": "Store u16",
+    "description": "Store register's low 16 bits to memory address (little-endian)",
+    "mutations": "\\memwr_{\\immed_X\\dots+2} = \\se_2(\\reg_A \\bmod 2^{16})",
     "opcode": 60,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -319,7 +339,8 @@
   },
   {
     "name": "store_u32",
-    "description": "Store u32",
+    "description": "Store register's low 32 bits to memory address (little-endian)",
+    "mutations": "\\memwr_{\\immed_X\\dots+4} = \\se_4(\\reg_A \\bmod 2^{32})",
     "opcode": 61,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -337,7 +358,8 @@
   },
   {
     "name": "store_u64",
-    "description": "Store u64",
+    "description": "Store register's 64 bits to memory address (little-endian)",
+    "mutations": "\\memwr_{\\immed_X\\dots+8} = \\se_8(\\reg_A)",
     "opcode": 62,
     "category": "RI",
     "categoryDescription": "Instructions with arguments of one register and one immediate",
@@ -355,7 +377,8 @@
   },
   {
     "name": "store_imm_ind_u8",
-    "description": "Store immediate indirect u8",
+    "description": "Store immediate 8-bit value at register plus offset address",
+    "mutations": "\\memwr_{\\reg_A + \\immed_X} = \\immed_Y \\bmod 2^8",
     "opcode": 70,
     "category": "RII",
     "categoryDescription": "Instructions with arguments of one register and two immediates",
@@ -373,7 +396,8 @@
   },
   {
     "name": "store_imm_ind_u16",
-    "description": "Store immediate indirect u16",
+    "description": "Store immediate 16-bit value at register plus offset address (little-endian)",
+    "mutations": "\\memwr_{\\reg_A + \\immed_X \\dots+ 2} = \\se_2(\\immed_Y \\bmod 2^{16})",
     "opcode": 71,
     "category": "RII",
     "categoryDescription": "Instructions with arguments of one register and two immediates",
@@ -391,7 +415,8 @@
   },
   {
     "name": "store_imm_ind_u32",
-    "description": "Store immediate indirect u32",
+    "description": "Store immediate 32-bit value at register plus offset address (little-endian)",
+    "mutations": "\\memwr_{\\reg_A + \\immed_X \\dots+ 4} = \\se_4(\\immed_Y \\bmod 2^{32})",
     "opcode": 72,
     "category": "RII",
     "categoryDescription": "Instructions with arguments of one register and two immediates",
@@ -409,7 +434,8 @@
   },
   {
     "name": "store_imm_ind_u64",
-    "description": "Store immediate indirect u64",
+    "description": "Store immediate 64-bit value at register plus offset address (little-endian)",
+    "mutations": "\\memwr_{\\reg_A + \\immed_X \\dots+ 8} = \\se_8(\\immed_Y)",
     "opcode": 73,
     "category": "RII",
     "categoryDescription": "Instructions with arguments of one register and two immediates",
@@ -427,7 +453,8 @@
   },
   {
     "name": "load_imm_jump",
-    "description": "Load immediate and jump",
+    "description": "Load immediate into register and unconditionally jump to offset",
+    "mutations": "\\token{branch}(\\immed_Y, \\top)\\ ,\\qquad \\reg_A' = \\immed_X",
     "opcode": 80,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -449,7 +476,8 @@
   },
   {
     "name": "branch_eq_imm",
-    "description": "Branch if equal immediate",
+    "description": "Branch to offset if register equals immediate value",
+    "mutations": "\\token{branch}(\\immed_Y, \\reg_A = \\immed_X)",
     "opcode": 81,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -471,7 +499,8 @@
   },
   {
     "name": "branch_ne_imm",
-    "description": "Branch if not equal immediate",
+    "description": "Branch to offset if register not equal to immediate value",
+    "mutations": "\\token{branch}(\\immed_Y, \\reg_A \\ne \\immed_X)",
     "opcode": 82,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -493,7 +522,8 @@
   },
   {
     "name": "branch_lt_u_imm",
-    "description": "Branch if less than unsigned immediate",
+    "description": "Branch to offset if register less than immediate (unsigned)",
+    "mutations": "\\token{branch}(\\immed_Y, \\reg_A < \\immed_X)",
     "opcode": 83,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -515,7 +545,8 @@
   },
   {
     "name": "branch_le_u_imm",
-    "description": "Branch if less than or equal unsigned immediate",
+    "description": "Branch to offset if register less than or equal to immediate (unsigned)",
+    "mutations": "\\token{branch}(\\immed_Y, \\reg_A \\le \\immed_X)",
     "opcode": 84,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -537,7 +568,8 @@
   },
   {
     "name": "branch_ge_u_imm",
-    "description": "Branch if greater than or equal unsigned immediate",
+    "description": "Branch to offset if register greater than or equal to immediate (unsigned)",
+    "mutations": "\\token{branch}(\\immed_Y, \\reg_A \\ge \\immed_X)",
     "opcode": 85,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -559,7 +591,8 @@
   },
   {
     "name": "branch_gt_u_imm",
-    "description": "Branch if greater than unsigned immediate",
+    "description": "Branch to offset if register greater than immediate (unsigned)",
+    "mutations": "\\token{branch}(\\immed_Y, \\reg_A > \\immed_X)",
     "opcode": 86,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -581,7 +614,8 @@
   },
   {
     "name": "branch_lt_s_imm",
-    "description": "Branch if less than signed immediate",
+    "description": "Branch to offset if register less than immediate (signed)",
+    "mutations": "\\token{branch}(\\immed_Y, \\signed{\\reg_A} < \\signed{\\immed_X})",
     "opcode": 87,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -603,7 +637,8 @@
   },
   {
     "name": "branch_le_s_imm",
-    "description": "Branch if less than or equal signed immediate",
+    "description": "Branch to offset if register less than or equal to immediate (signed)",
+    "mutations": "\\token{branch}(\\immed_Y, \\signed{\\reg_A} \\le \\signed{\\immed_X})",
     "opcode": 88,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -625,7 +660,8 @@
   },
   {
     "name": "branch_ge_s_imm",
-    "description": "Branch if greater than or equal signed immediate",
+    "description": "Branch to offset if register greater than or equal to immediate (signed)",
+    "mutations": "\\token{branch}(\\immed_Y, \\signed{\\reg_A} \\ge \\signed{\\immed_X})",
     "opcode": 89,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -647,7 +683,8 @@
   },
   {
     "name": "branch_gt_s_imm",
-    "description": "Branch if greater than signed immediate",
+    "description": "Branch to offset if register greater than immediate (signed)",
+    "mutations": "\\token{branch}(\\immed_Y, \\signed{\\reg_A} > \\signed{\\immed_X})",
     "opcode": 90,
     "category": "RIO",
     "categoryDescription": "Instructions with arguments of one register, one immediate and one offset",
@@ -669,7 +706,8 @@
   },
   {
     "name": "move_reg",
-    "description": "Move register",
+    "description": "Copy value from source register to destination register",
+    "mutations": "\\reg'_D = \\reg_A",
     "opcode": 100,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -683,7 +721,8 @@
   },
   {
     "name": "sbrk",
-    "description": "Set break",
+    "description": "Set program break - allocate heap memory and return address",
+    "mutations": "\\reg'_D \\equiv \\min(x \\in \\N_R): x \\ge h \\wedge \\N_{x\\dots+\\reg_A} \\not\\subseteq \\mathbb{V}_{\\memory} \\wedge \\N_{x\\dots+\\reg_A} \\subseteq \\mathbb{V}^*_{\\memory'}",
     "opcode": 101,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -697,7 +736,8 @@
   },
   {
     "name": "count_set_bits_64",
-    "description": "Count set bits 64",
+    "description": "Count number of set bits in 64-bit register value",
+    "mutations": "\\reg'_D = \\sum_{i = 0}^{63}\\bitsfunc{8}(\\reg_A)_i",
     "opcode": 102,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -711,7 +751,8 @@
   },
   {
     "name": "count_set_bits_32",
-    "description": "Count set bits 32",
+    "description": "Count number of set bits in low 32 bits of register",
+    "mutations": "\\reg'_D = \\sum_{i = 0}^{31}\\bitsfunc{4}(\\reg_A \\bmod 2^{32})_i",
     "opcode": 103,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -725,7 +766,8 @@
   },
   {
     "name": "leading_zero_bits_64",
-    "description": "Leading zero bits 64",
+    "description": "Count leading zero bits in 64-bit register value",
+    "mutations": "\\reg'_D = \\max(n \\in \\N_{65})\\ \\where \\sum_{i = 0}^{i < n} \\revbitsfunc{8}(\\reg_A)_i = 0",
     "opcode": 104,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -739,7 +781,8 @@
   },
   {
     "name": "leading_zero_bits_32",
-    "description": "Leading zero bits 32",
+    "description": "Count leading zero bits in low 32 bits of register",
+    "mutations": "\\reg'_D = \\max(n \\in \\N_{33})\\ \\where \\sum_{i = 0}^{i < n} \\revbitsfunc{4}(\\reg_A \\bmod 2^{32})_i = 0",
     "opcode": 105,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -753,7 +796,8 @@
   },
   {
     "name": "trailing_zero_bits_64",
-    "description": "Trailing zero bits 64",
+    "description": "Count trailing zero bits in 64-bit register value",
+    "mutations": "\\reg'_D = \\max(n \\in \\N_{65})\\ \\where \\sum_{i = 0}^{i < n} \\bitsfunc{8}(\\reg_A)_{i} = 0",
     "opcode": 106,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -767,7 +811,8 @@
   },
   {
     "name": "trailing_zero_bits_32",
-    "description": "Trailing zero bits 32",
+    "description": "Count trailing zero bits in low 32 bits of register",
+    "mutations": "\\reg'_D = \\max(n \\in \\N_{33})\\ \\where \\sum_{i = 0}^{i < n} \\bitsfunc{4}(\\reg_A \\bmod 2^{32})_{i} = 0",
     "opcode": 107,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -781,7 +826,8 @@
   },
   {
     "name": "sign_extend_8",
-    "description": "Sign extend 8",
+    "description": "Sign-extend low 8 bits of register to 64 bits",
+    "mutations": "\\reg'_D = \\unsigned{\\signedn{1}{\\reg_A \\bmod 2^8}}",
     "opcode": 108,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -795,7 +841,8 @@
   },
   {
     "name": "sign_extend_16",
-    "description": "Sign extend 16",
+    "description": "Sign-extend low 16 bits of register to 64 bits",
+    "mutations": "\\reg'_D = \\unsigned{\\signedn{2}{\\reg_A \\bmod 2^{16}}}",
     "opcode": 109,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -809,7 +856,8 @@
   },
   {
     "name": "zero_extend_16",
-    "description": "Zero extend 16",
+    "description": "Zero-extend low 16 bits of register (clear upper bits)",
+    "mutations": "\\reg'_D = \\reg_A \\bmod 2^{16}",
     "opcode": 110,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -823,7 +871,8 @@
   },
   {
     "name": "reverse_bytes",
-    "description": "Reverse bytes",
+    "description": "Reverse byte order of register value (endian swap)",
+    "mutations": "\\forall i \\in \\N_8 : \\se_8(\\reg'_D)_i = \\se_8(\\reg_A)_{7-i}",
     "opcode": 111,
     "category": "RR",
     "categoryDescription": "Instructions with arguments of two register",
@@ -837,7 +886,8 @@
   },
   {
     "name": "store_ind_u8",
-    "description": "Store indirect u8",
+    "description": "Store register's low 8 bits at base register plus immediate offset",
+    "mutations": "\\memwr_{\\reg_B + \\immed_X} = \\reg_A \\bmod 2^8",
     "opcode": 120,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -855,7 +905,8 @@
   },
   {
     "name": "store_ind_u16",
-    "description": "Store indirect u16",
+    "description": "Store register's low 16 bits at base register plus immediate offset (little-endian)",
+    "mutations": "\\memwr_{\\reg_B + \\immed_X \\dots+ 2} = \\se_2(\\reg_A \\bmod 2^{16})",
     "opcode": 121,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -873,7 +924,8 @@
   },
   {
     "name": "store_ind_u32",
-    "description": "Store indirect u32",
+    "description": "Store register's low 32 bits at base register plus immediate offset (little-endian)",
+    "mutations": "\\memwr_{\\reg_B + \\immed_X \\dots+ 4} = \\se_4(\\reg_A \\bmod 2^{32})",
     "opcode": 122,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -891,7 +943,8 @@
   },
   {
     "name": "store_ind_u64",
-    "description": "Store indirect u64",
+    "description": "Store register's 64 bits at base register plus immediate offset (little-endian)",
+    "mutations": "\\memwr_{\\reg_B + \\immed_X \\dots+ 8} = \\se_8(\\reg_A)",
     "opcode": 123,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -909,7 +962,8 @@
   },
   {
     "name": "load_ind_u8",
-    "description": "Load indirect u8",
+    "description": "Load unsigned 8-bit value from base register plus immediate offset",
+    "mutations": "\\reg'_A = \\memr_{\\reg_B + \\immed_X}",
     "opcode": 124,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -927,7 +981,8 @@
   },
   {
     "name": "load_ind_i8",
-    "description": "Load indirect i8",
+    "description": "Load signed 8-bit value from base register plus immediate offset (sign-extended)",
+    "mutations": "\\reg'_A = \\unsigned{\\signedn{1}{\\memr_{\\reg_B + \\immed_X}}}",
     "opcode": 125,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -945,7 +1000,8 @@
   },
   {
     "name": "load_ind_u16",
-    "description": "Load indirect u16",
+    "description": "Load unsigned 16-bit value from base register plus immediate offset (little-endian)",
+    "mutations": "\\reg'_A = \\de_2(\\memr_{\\reg_B + \\immed_X\\dots+2})",
     "opcode": 126,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -963,7 +1019,8 @@
   },
   {
     "name": "load_ind_i16",
-    "description": "Load indirect i16",
+    "description": "Load signed 16-bit value from base register plus immediate offset (little-endian, sign-extended)",
+    "mutations": "\\reg'_A = \\unsigned{\\signedn{2}{\\de_2(\\memr_{\\reg_B + \\immed_X\\dots+2})}}",
     "opcode": 127,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -981,7 +1038,8 @@
   },
   {
     "name": "load_ind_u32",
-    "description": "Load indirect u32",
+    "description": "Load unsigned 32-bit value from base register plus immediate offset (little-endian)",
+    "mutations": "\\reg'_A = \\de_4(\\memr_{\\reg_B + \\immed_X\\dots+4})",
     "opcode": 128,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -999,7 +1057,8 @@
   },
   {
     "name": "load_ind_i32",
-    "description": "Load indirect i32",
+    "description": "Load signed 32-bit value from base register plus immediate offset (little-endian, sign-extended)",
+    "mutations": "\\reg'_A = \\unsigned{\\signedn{4}{\\de_4(\\memr_{\\reg_B + \\immed_X\\dots+4})}}",
     "opcode": 129,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1017,7 +1076,8 @@
   },
   {
     "name": "load_ind_u64",
-    "description": "Load indirect u64",
+    "description": "Load 64-bit value from base register plus immediate offset (little-endian)",
+    "mutations": "\\reg'_A = \\de_8(\\memr_{\\reg_B + \\immed_X\\dots+8})",
     "opcode": 130,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1035,7 +1095,8 @@
   },
   {
     "name": "add_imm_32",
-    "description": "Add immediate 32",
+    "description": "Add immediate to register, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\sext_4((\\reg_B + \\immed_X) \\bmod 2^{32})",
     "opcode": 131,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1053,7 +1114,8 @@
   },
   {
     "name": "and_imm",
-    "description": "And immediate",
+    "description": "Bitwise AND register with immediate",
+    "mutations": "\\forall i \\in \\N_{64} : \\bits{\\reg'_A}_i = \\bits{\\reg_B}_i \\wedge \\bits{\\immed_X}_i",
     "opcode": 132,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1071,7 +1133,8 @@
   },
   {
     "name": "xor_imm",
-    "description": "Xor immediate",
+    "description": "Bitwise XOR register with immediate",
+    "mutations": "\\forall i \\in \\N_{64} : \\bits{\\reg'_A}_i = \\bits{\\reg_B}_i \\oplus \\bits{\\immed_X}_i",
     "opcode": 133,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1089,7 +1152,8 @@
   },
   {
     "name": "or_imm",
-    "description": "Or immediate",
+    "description": "Bitwise OR register with immediate",
+    "mutations": "\\forall i \\in \\N_{64} : \\bits{\\reg'_A}_i = \\bits{\\reg_B}_i \\vee \\bits{\\immed_X}_i",
     "opcode": 134,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1107,7 +1171,8 @@
   },
   {
     "name": "mul_imm_32",
-    "description": "Multiply immediate 32",
+    "description": "Multiply register by immediate, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\sext_4((\\reg_B \\cdot \\immed_X) \\bmod 2^{32})",
     "opcode": 135,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1125,7 +1190,8 @@
   },
   {
     "name": "set_lt_u_imm",
-    "description": "Set if less than unsigned immediate",
+    "description": "Set register to 1 if less than immediate (unsigned), 0 otherwise",
+    "mutations": "\\reg'_A = \\reg_B < \\immed_X",
     "opcode": 136,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1143,7 +1209,8 @@
   },
   {
     "name": "set_lt_s_imm",
-    "description": "Set if less than signed immediate",
+    "description": "Set register to 1 if less than immediate (signed), 0 otherwise",
+    "mutations": "\\reg'_A = \\signed{\\reg_B} < \\signed{\\immed_X}",
     "opcode": 137,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1161,7 +1228,8 @@
   },
   {
     "name": "shlo_l_imm_32",
-    "description": "Shift left immediate 32",
+    "description": "Shift register left by immediate bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\sext_4((\\reg_B \\cdot 2^{\\immed_X \\bmod 32}) \\bmod 2^{32})",
     "opcode": 138,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1179,7 +1247,8 @@
   },
   {
     "name": "shlo_r_imm_32",
-    "description": "Shift right immediate 32",
+    "description": "Logical shift register right by immediate bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\sext_4(\\floor{\\reg_B \\bmod 2^{32} \\div 2^{\\immed_X \\bmod 32}})",
     "opcode": 139,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1197,7 +1266,8 @@
   },
   {
     "name": "shar_r_imm_32",
-    "description": "Shift arithmetic right immediate 32",
+    "description": "Arithmetic shift register right by immediate bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\unsigned{\\floor{\\signedn{4}{\\reg_B \\bmod 2^{32} } \\div 2^{\\immed_X \\bmod 32}}}",
     "opcode": 140,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1215,7 +1285,8 @@
   },
   {
     "name": "neg_add_imm_32",
-    "description": "Negate and add immediate 32",
+    "description": "Add immediate to two's complement of register, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\sext_4((\\immed_X + 2^{32} - \\reg_B) \\bmod 2^{32})",
     "opcode": 141,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1233,7 +1304,8 @@
   },
   {
     "name": "set_gt_u_imm",
-    "description": "Set if greater than unsigned immediate",
+    "description": "Set register to 1 if greater than immediate (unsigned), 0 otherwise",
+    "mutations": "\\reg'_A = \\reg_B > \\immed_X",
     "opcode": 142,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1251,7 +1323,8 @@
   },
   {
     "name": "set_gt_s_imm",
-    "description": "Set if greater than signed immediate",
+    "description": "Set register to 1 if greater than immediate (signed), 0 otherwise",
+    "mutations": "\\reg'_A = \\signed{\\reg_B} > \\signed{\\immed_X}",
     "opcode": 143,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1269,7 +1342,8 @@
   },
   {
     "name": "shlo_l_imm_alt_32",
-    "description": "Shift left immediate alternative 32",
+    "description": "Shift immediate left by register bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\sext_4((\\immed_X \\cdot 2^{\\reg_B \\bmod 32}) \\bmod 2^{32})",
     "opcode": 144,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1287,7 +1361,8 @@
   },
   {
     "name": "shlo_r_imm_alt_32",
-    "description": "Shift right immediate alternative 32",
+    "description": "Logical shift immediate right by register bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\sext_4(\\floor{\\immed_X \\bmod 2^{32} \\div 2^{\\reg_B \\bmod 32}})",
     "opcode": 145,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1305,7 +1380,8 @@
   },
   {
     "name": "shar_r_imm_alt_32",
-    "description": "Shift arithmetic right immediate alternative 32",
+    "description": "Arithmetic shift immediate right by register bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\unsigned{\\floor{\\signedn{4}{\\immed_X \\bmod 2^{32}} \\div 2^{\\reg_B \\bmod 32}}}",
     "opcode": 146,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1323,7 +1399,8 @@
   },
   {
     "name": "cmov_iz_imm",
-    "description": "Conditional move if zero immediate",
+    "description": "Conditionally move immediate to register if condition register is zero",
+    "mutations": "\\reg'_A = \\begin{cases} \\immed_X &\\when \\reg_B = 0\\\\ \\reg_A &\\otherwise \\end{cases}",
     "opcode": 147,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1341,7 +1418,8 @@
   },
   {
     "name": "cmov_nz_imm",
-    "description": "Conditional move if not zero immediate",
+    "description": "Conditionally move immediate to register if condition register is non-zero",
+    "mutations": "\\reg'_A = \\begin{cases} \\immed_X &\\when \\reg_B \\ne 0\\\\ \\reg_A &\\otherwise \\end{cases}",
     "opcode": 148,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1359,7 +1437,8 @@
   },
   {
     "name": "add_imm_64",
-    "description": "Add immediate 64",
+    "description": "Add immediate to register (64-bit result)",
+    "mutations": "\\reg'_A = (\\reg_B + \\immed_X) \\bmod 2^{64}",
     "opcode": 149,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1377,7 +1456,8 @@
   },
   {
     "name": "mul_imm_64",
-    "description": "Multiply immediate 64",
+    "description": "Multiply register by immediate (64-bit result)",
+    "mutations": "\\reg'_A = (\\reg_B \\cdot \\immed_X) \\bmod 2^{64}",
     "opcode": 150,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1395,7 +1475,8 @@
   },
   {
     "name": "shlo_l_imm_64",
-    "description": "Shift left immediate 64",
+    "description": "Shift register left by immediate bits (64-bit result)",
+    "mutations": "\\reg'_A = \\sext_8((\\reg_B \\cdot 2^{\\immed_X \\bmod 64}) \\bmod 2^{64})",
     "opcode": 151,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1413,7 +1494,8 @@
   },
   {
     "name": "shlo_r_imm_64",
-    "description": "Shift right immediate 64",
+    "description": "Logical shift register right by immediate bits (64-bit result)",
+    "mutations": "\\reg'_A = \\sext_8(\\floor{\\reg_B \\div 2^{\\immed_X \\bmod 64}})",
     "opcode": 152,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1431,7 +1513,8 @@
   },
   {
     "name": "shar_r_imm_64",
-    "description": "Shift arithmetic right immediate 64",
+    "description": "Arithmetic shift register right by immediate bits (64-bit result)",
+    "mutations": "\\reg'_A = \\unsigned{\\floor{\\signed{\\reg_B} \\div 2^{\\immed_X \\bmod 64}}}",
     "opcode": 153,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1449,7 +1532,8 @@
   },
   {
     "name": "neg_add_imm_64",
-    "description": "Negate and add immediate 64",
+    "description": "Add immediate to two's complement of register (64-bit result)",
+    "mutations": "\\reg'_A = (\\immed_X + 2^{64} - \\reg_B) \\bmod 2^{64}",
     "opcode": 154,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1467,7 +1551,8 @@
   },
   {
     "name": "shlo_l_imm_alt_64",
-    "description": "Shift left immediate alternative 64",
+    "description": "Shift immediate left by register bits (64-bit result)",
+    "mutations": "\\reg'_A = (\\immed_X \\cdot 2^{\\reg_B \\bmod 64}) \\bmod 2^{64}",
     "opcode": 155,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1485,7 +1570,8 @@
   },
   {
     "name": "shlo_r_imm_alt_64",
-    "description": "Shift right immediate alternative 64",
+    "description": "Logical shift immediate right by register bits (64-bit result)",
+    "mutations": "\\reg'_A = \\floor{\\immed_X \\div 2^{\\reg_B \\bmod 64}}",
     "opcode": 156,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1503,7 +1589,8 @@
   },
   {
     "name": "shar_r_imm_alt_64",
-    "description": "Shift arithmetic right immediate alternative 64",
+    "description": "Arithmetic shift immediate right by register bits (64-bit result)",
+    "mutations": "\\reg'_A = \\unsigned{\\floor{\\signed{\\immed_X} \\div 2^{\\reg_B \\bmod 64}}}",
     "opcode": 157,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1521,7 +1608,8 @@
   },
   {
     "name": "rot_r_64_imm",
-    "description": "Rotate right 64 immediate",
+    "description": "Rotate register right by immediate bits (64-bit)",
+    "mutations": "\\forall i \\in \\N_{64} : \\bitsfunc{8}(\\reg'_A)_i = \\bitsfunc{8}(\\reg_B)_{(i + \\immed_X) \\bmod 64}",
     "opcode": 158,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1539,7 +1627,8 @@
   },
   {
     "name": "rot_r_64_imm_alt",
-    "description": "Rotate right 64 immediate alternative",
+    "description": "Rotate immediate right by register bits (64-bit)",
+    "mutations": "\\forall i \\in \\N_{64} : \\bitsfunc{8}(\\reg'_A)_i = \\bitsfunc{8}(\\immed_X)_{(i + \\reg_B) \\bmod 64}",
     "opcode": 159,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1557,7 +1646,8 @@
   },
   {
     "name": "rot_r_32_imm",
-    "description": "Rotate right 32 immediate",
+    "description": "Rotate register right by immediate bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\sext_4(x)\\ \\where x \\in \\N_{2^{32}}, \\forall i \\in \\N_{32} : \\bitsfunc{4}(x)_i = \\bitsfunc{4}(\\reg_B)_{(i + \\immed_X) \\bmod 32}",
     "opcode": 160,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1575,7 +1665,8 @@
   },
   {
     "name": "rot_r_32_imm_alt",
-    "description": "Rotate right 32 immediate alternative",
+    "description": "Rotate immediate right by register bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_A = \\sext_4(x)\\ \\where x \\in \\N_{2^{32}}, \\forall i \\in \\N_{32} : \\bitsfunc{4}(x)_i = \\bitsfunc{4}(\\immed_X)_{(i + \\reg_B) \\bmod 32}",
     "opcode": 161,
     "category": "RRI",
     "categoryDescription": "Instructions with arguments of two register and one immediate",
@@ -1593,7 +1684,8 @@
   },
   {
     "name": "branch_eq",
-    "description": "Branch if equal",
+    "description": "Branch to offset if first register equals second register",
+    "mutations": "\\token{branch}(\\immed_X, \\reg_A = \\reg_B)",
     "opcode": 170,
     "category": "RRO",
     "categoryDescription": "Instructions with arguments of two register and one offset",
@@ -1611,7 +1703,8 @@
   },
   {
     "name": "branch_ne",
-    "description": "Branch if not equal",
+    "description": "Branch to offset if first register not equal to second register",
+    "mutations": "\\token{branch}(\\immed_X, \\reg_A \\ne \\reg_B)",
     "opcode": 171,
     "category": "RRO",
     "categoryDescription": "Instructions with arguments of two register and one offset",
@@ -1629,7 +1722,8 @@
   },
   {
     "name": "branch_lt_u",
-    "description": "Branch if less than unsigned",
+    "description": "Branch to offset if first register less than second register (unsigned)",
+    "mutations": "\\token{branch}(\\immed_X, \\reg_A < \\reg_B)",
     "opcode": 172,
     "category": "RRO",
     "categoryDescription": "Instructions with arguments of two register and one offset",
@@ -1647,7 +1741,8 @@
   },
   {
     "name": "branch_lt_s",
-    "description": "Branch if less than signed",
+    "description": "Branch to offset if first register less than second register (signed)",
+    "mutations": "\\token{branch}(\\immed_X, \\signed{\\reg_A} < \\signed{\\reg_B})",
     "opcode": 173,
     "category": "RRO",
     "categoryDescription": "Instructions with arguments of two register and one offset",
@@ -1665,7 +1760,8 @@
   },
   {
     "name": "branch_ge_u",
-    "description": "Branch if greater than or equal unsigned",
+    "description": "Branch to offset if first register greater than or equal to second register (unsigned)",
+    "mutations": "\\token{branch}(\\immed_X, \\reg_A \\ge \\reg_B)",
     "opcode": 174,
     "category": "RRO",
     "categoryDescription": "Instructions with arguments of two register and one offset",
@@ -1683,7 +1779,8 @@
   },
   {
     "name": "branch_ge_s",
-    "description": "Branch if greater than or equal signed",
+    "description": "Branch to offset if first register greater than or equal to second register (signed)",
+    "mutations": "\\token{branch}(\\immed_X, \\signed{\\reg_A} \\ge \\signed{\\reg_B})",
     "opcode": 175,
     "category": "RRO",
     "categoryDescription": "Instructions with arguments of two register and one offset",
@@ -1701,7 +1798,8 @@
   },
   {
     "name": "load_imm_jump_ind",
-    "description": "Load immediate and jump indirect",
+    "description": "Load immediate into register and jump using second register plus offset as jump table index",
+    "mutations": "\\token{djump}((\\reg_B + \\immed_Y) \\bmod 2^{32})\\ ,\\qquad \\reg_A' = \\immed_X",
     "opcode": 180,
     "category": "RRII",
     "categoryDescription": "Instructions with arguments of two register and two immediates",
@@ -1719,7 +1817,8 @@
   },
   {
     "name": "add_32",
-    "description": "Add 32",
+    "description": "Add two registers, store sign-extended 32-bit result in destination",
+    "mutations": "\\reg'_D = \\sext_4((\\reg_A + \\reg_B) \\bmod 2^{32})",
     "opcode": 190,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1733,7 +1832,8 @@
   },
   {
     "name": "sub_32",
-    "description": "Subtract 32",
+    "description": "Subtract second register from first, store sign-extended 32-bit result in destination",
+    "mutations": "\\reg'_D = \\sext_4((\\reg_A + 2^{32} - (\\reg_B \\bmod 2^{32})) \\bmod 2^{32})",
     "opcode": 191,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1747,7 +1847,8 @@
   },
   {
     "name": "mul_32",
-    "description": "Multiply 32",
+    "description": "Multiply two registers, store sign-extended 32-bit result in destination",
+    "mutations": "\\reg'_D = \\sext_4((\\reg_A \\cdot \\reg_B) \\bmod 2^{32})",
     "opcode": 192,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1761,7 +1862,8 @@
   },
   {
     "name": "div_u_32",
-    "description": "Divide unsigned 32",
+    "description": "Divide first register by second (unsigned 32-bit), store sign-extended result in destination",
+    "mutations": "\\reg'_D = \\begin{cases} 2^{64} - 1 &\\when \\reg_B \\bmod 2^{32} = 0\\\\ \\sext_4(\\floor{(\\reg_A \\bmod 2^{32}) \\div (\\reg_B \\bmod 2^{32})}) &\\otherwise \\end{cases}",
     "opcode": 193,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1775,7 +1877,8 @@
   },
   {
     "name": "div_s_32",
-    "description": "Divide signed 32",
+    "description": "Divide first register by second (signed 32-bit), store result in destination",
+    "mutations": "\\reg'_D = \\begin{cases} 2^{64} - 1 &\\when b = 0\\\\ \\unsigned{a} &\\when a = -2^{31} \\wedge b = -1\\\\ \\unsigned{\\rtz(a \\div b)} &\\otherwise \\\\[2pt] \\multicolumn{2}{l}{\\quad \\where a = \\signedn{4}{\\reg_A \\bmod 2^{32}}\\,,\\ b = \\signedn{4}{\\reg_B \\bmod 2^{32}}} \\end{cases}",
     "opcode": 194,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1789,7 +1892,8 @@
   },
   {
     "name": "rem_u_32",
-    "description": "Remainder unsigned 32",
+    "description": "Remainder of first register divided by second (unsigned 32-bit), store sign-extended result",
+    "mutations": "\\reg'_D = \\begin{cases} \\sext_4(\\reg_A \\bmod 2^{32}) &\\when \\reg_B \\bmod 2^{32} = 0\\\\ \\sext_4((\\reg_A \\bmod 2^{32}) \\bmod (\\reg_B \\bmod 2^{32})) &\\otherwise \\end{cases}",
     "opcode": 195,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1803,7 +1907,8 @@
   },
   {
     "name": "rem_s_32",
-    "description": "Remainder signed 32",
+    "description": "Remainder of first register divided by second (signed 32-bit), store result",
+    "mutations": "\\reg'_D = \\begin{cases} 0 &\\when a = -2^{31} \\wedge b = -1 \\\\ \\unsigned{\\smod(a, b)} &\\otherwise \\\\[2pt] \\multicolumn{2}{l}{\\quad \\where a = \\signedn{4}{\\reg_A \\bmod 2^{32}}\\,,\\ b = \\signedn{4}{\\reg_B \\bmod 2^{32}}} \\end{cases}",
     "opcode": 196,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1817,7 +1922,8 @@
   },
   {
     "name": "shlo_l_32",
-    "description": "Shift left 32",
+    "description": "Shift first register left by second register bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_D = \\sext_4((\\reg_A \\cdot 2^{\\reg_B \\bmod 32}) \\bmod 2^{32})",
     "opcode": 197,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1831,7 +1937,8 @@
   },
   {
     "name": "shlo_r_32",
-    "description": "Shift right 32",
+    "description": "Logical shift first register right by second register bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_D = \\sext_4(\\floor{(\\reg_A \\bmod 2^{32}) \\div 2^{\\reg_B \\bmod 32}})",
     "opcode": 198,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1845,7 +1952,8 @@
   },
   {
     "name": "shar_r_32",
-    "description": "Shift arithmetic right 32",
+    "description": "Arithmetic shift first register right by second register bits, store result",
+    "mutations": "\\reg'_D = \\unsigned{\\floor{\\signedn{4}{\\reg_A \\bmod 2^{32}} \\div 2^{\\reg_B \\bmod 32}}}",
     "opcode": 199,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1859,7 +1967,8 @@
   },
   {
     "name": "add_64",
-    "description": "Add 64",
+    "description": "Add two registers, store 64-bit result in destination",
+    "mutations": "\\reg'_D = (\\reg_A + \\reg_B) \\bmod 2^{64}",
     "opcode": 200,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1873,7 +1982,8 @@
   },
   {
     "name": "sub_64",
-    "description": "Subtract 64",
+    "description": "Subtract second register from first, store 64-bit result in destination",
+    "mutations": "\\reg'_D = (\\reg_A + 2^{64} - \\reg_B) \\bmod 2^{64}",
     "opcode": 201,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1887,7 +1997,8 @@
   },
   {
     "name": "mul_64",
-    "description": "Multiply 64",
+    "description": "Multiply two registers, store 64-bit result in destination",
+    "mutations": "\\reg'_D = (\\reg_A \\cdot \\reg_B) \\bmod 2^{64}",
     "opcode": 202,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1901,7 +2012,8 @@
   },
   {
     "name": "div_u_64",
-    "description": "Divide unsigned 64",
+    "description": "Divide first register by second (unsigned 64-bit), store result in destination",
+    "mutations": "\\reg'_D = \\begin{cases} 2^{64} - 1 &\\when \\reg_B = 0\\\\ \\floor{\\reg_A \\div \\reg_B} &\\otherwise \\end{cases}",
     "opcode": 203,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1915,7 +2027,8 @@
   },
   {
     "name": "div_s_64",
-    "description": "Divide signed 64",
+    "description": "Divide first register by second (signed 64-bit), store result in destination",
+    "mutations": "\\reg'_D = \\begin{cases} 2^{64} - 1 &\\when \\reg_B = 0\\\\ \\reg_A &\\when \\signed{\\reg_A} = -2^{63} \\wedge \\signed{\\reg_B} = -1\\\\ \\unsigned{\\rtz(\\signed{\\reg_A} \\div \\signed{\\reg_B})} &\\otherwise \\end{cases}",
     "opcode": 204,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1929,7 +2042,8 @@
   },
   {
     "name": "rem_u_64",
-    "description": "Remainder unsigned 64",
+    "description": "Remainder of first register divided by second (unsigned 64-bit), store result",
+    "mutations": "\\reg'_D = \\begin{cases} \\reg_A &\\when \\reg_B = 0\\\\ \\reg_A \\bmod \\reg_B &\\otherwise \\end{cases}",
     "opcode": 205,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1943,7 +2057,8 @@
   },
   {
     "name": "rem_s_64",
-    "description": "Remainder signed 64",
+    "description": "Remainder of first register divided by second (signed 64-bit), store result",
+    "mutations": "\\reg'_D = \\begin{cases} 0 &\\when \\signed{\\reg_A} = -2^{63} \\wedge \\signed{\\reg_B} = -1\\\\ \\unsigned{\\smod(\\signed{\\reg_A}, \\signed{\\reg_B})} &\\otherwise \\end{cases}",
     "opcode": 206,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1957,7 +2072,8 @@
   },
   {
     "name": "shlo_l_64",
-    "description": "Shift left 64",
+    "description": "Shift first register left by second register bits, store 64-bit result",
+    "mutations": "\\reg'_D = (\\reg_A \\cdot 2^{\\reg_B \\bmod 64}) \\bmod 2^{64}",
     "opcode": 207,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1971,7 +2087,8 @@
   },
   {
     "name": "shlo_r_64",
-    "description": "Shift right 64",
+    "description": "Logical shift first register right by second register bits, store 64-bit result",
+    "mutations": "\\reg'_D = \\floor{\\reg_A \\div 2^{\\reg_B \\bmod 64}}",
     "opcode": 208,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1985,7 +2102,8 @@
   },
   {
     "name": "shar_r_64",
-    "description": "Shift arithmetic right 64",
+    "description": "Arithmetic shift first register right by second register bits, store result",
+    "mutations": "\\reg'_D = \\unsigned{\\floor{\\signed{\\reg_A} \\div 2^{\\reg_B \\bmod 64}}}",
     "opcode": 209,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -1999,7 +2117,8 @@
   },
   {
     "name": "and",
-    "description": "And",
+    "description": "Bitwise AND two registers, store result in destination",
+    "mutations": "\\forall i \\in \\N_{64} : \\bits{\\reg'_D}_i = \\bits{\\reg_A}_i \\wedge \\bits{\\reg_B}_i",
     "opcode": 210,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2013,7 +2132,8 @@
   },
   {
     "name": "xor",
-    "description": "Xor",
+    "description": "Bitwise XOR two registers, store result in destination",
+    "mutations": "\\forall i \\in \\N_{64} : \\bits{\\reg'_D}_i = \\bits{\\reg_A}_i \\oplus \\bits{\\reg_B}_i",
     "opcode": 211,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2027,7 +2147,8 @@
   },
   {
     "name": "or",
-    "description": "Or",
+    "description": "Bitwise OR two registers, store result in destination",
+    "mutations": "\\forall i \\in \\N_{64} : \\bits{\\reg'_D}_i = \\bits{\\reg_A}_i \\vee \\bits{\\reg_B}_i",
     "opcode": 212,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2041,7 +2162,8 @@
   },
   {
     "name": "mul_upper_s_s",
-    "description": "Multiply signed signed upper",
+    "description": "Multiply two signed registers, store upper 64 bits of 128-bit result",
+    "mutations": "\\reg'_D = \\unsigned{\\floor{(\\signed{\\reg_A} \\cdot \\signed{\\reg_B}) \\div 2^{64}}}",
     "opcode": 213,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2055,7 +2177,8 @@
   },
   {
     "name": "mul_upper_u_u",
-    "description": "Multiply unsigned unsigned upper",
+    "description": "Multiply two unsigned registers, store upper 64 bits of 128-bit result",
+    "mutations": "\\reg'_D = \\floor{(\\reg_A \\cdot \\reg_B) \\div 2^{64}}",
     "opcode": 214,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2069,7 +2192,8 @@
   },
   {
     "name": "mul_upper_s_u",
-    "description": "Multiply signed unsigned upper",
+    "description": "Multiply signed and unsigned registers, store upper 64 bits of 128-bit result",
+    "mutations": "\\reg'_D = \\unsigned{\\floor{(\\signed{\\reg_A} \\cdot \\reg_B) \\div 2^{64}}}",
     "opcode": 215,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2083,7 +2207,8 @@
   },
   {
     "name": "set_lt_u",
-    "description": "Set if less than unsigned",
+    "description": "Set destination to 1 if first register less than second (unsigned), 0 otherwise",
+    "mutations": "\\reg'_D = \\reg_A < \\reg_B",
     "opcode": 216,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2097,7 +2222,8 @@
   },
   {
     "name": "set_lt_s",
-    "description": "Set if less than signed",
+    "description": "Set destination to 1 if first register less than second (signed), 0 otherwise",
+    "mutations": "\\reg'_D = \\signed{\\reg_A} < \\signed{\\reg_B}",
     "opcode": 217,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2111,7 +2237,8 @@
   },
   {
     "name": "cmov_iz",
-    "description": "Conditional move if zero",
+    "description": "Conditionally move first register to destination if second register is zero",
+    "mutations": "\\reg'_D = \\begin{cases} \\reg_A &\\when \\reg_B = 0\\\\ \\reg_D &\\otherwise \\end{cases}",
     "opcode": 218,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2125,7 +2252,8 @@
   },
   {
     "name": "cmov_nz",
-    "description": "Conditional move if not zero",
+    "description": "Conditionally move first register to destination if second register is non-zero",
+    "mutations": "\\reg'_D = \\begin{cases} \\reg_A &\\when \\reg_B \\ne 0\\\\ \\reg_D &\\otherwise \\end{cases}",
     "opcode": 219,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2139,7 +2267,8 @@
   },
   {
     "name": "rot_l_64",
-    "description": "Rotate left 64",
+    "description": "Rotate first register left by second register bits (64-bit)",
+    "mutations": "\\forall i \\in \\N_{64} : \\bitsfunc{8}(\\reg'_D)_{(i + \\reg_B) \\bmod 64} = \\bitsfunc{8}(\\reg_A)_i",
     "opcode": 220,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2153,7 +2282,8 @@
   },
   {
     "name": "rot_l_32",
-    "description": "Rotate left 32",
+    "description": "Rotate first register left by second register bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_D = \\sext_4(x)\\ \\where x \\in \\N_{2^{32}}, \\forall i \\in \\N_{32} : \\bitsfunc{4}(x)_{(i + \\reg_B) \\bmod 32} = \\bitsfunc{4}(\\reg_A)_i",
     "opcode": 221,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2167,7 +2297,8 @@
   },
   {
     "name": "rot_r_64",
-    "description": "Rotate right 64",
+    "description": "Rotate first register right by second register bits (64-bit)",
+    "mutations": "\\forall i \\in \\N_{64} : \\bitsfunc{8}(\\reg'_D)_i = \\bitsfunc{8}(\\reg_A)_{(i + \\reg_B) \\bmod 64}",
     "opcode": 222,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2181,7 +2312,8 @@
   },
   {
     "name": "rot_r_32",
-    "description": "Rotate right 32",
+    "description": "Rotate first register right by second register bits, store sign-extended 32-bit result",
+    "mutations": "\\reg'_D = \\sext_4(x)\\ \\where x \\in \\N_{2^{32}}, \\forall i \\in \\N_{32} : \\bitsfunc{4}(x)_i = \\bitsfunc{4}(\\reg_A)_{(i + \\reg_B) \\bmod 32}",
     "opcode": 223,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2195,7 +2327,8 @@
   },
   {
     "name": "and_inv",
-    "description": "And inverted",
+    "description": "Bitwise AND first register with bitwise NOT of second register",
+    "mutations": "\\forall i \\in \\N_{64} : \\bits{\\reg'_D}_i = \\bits{\\reg_A}_i \\wedge \\lnot \\bits{\\reg_B}_i",
     "opcode": 224,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2209,7 +2342,8 @@
   },
   {
     "name": "or_inv",
-    "description": "Or inverted",
+    "description": "Bitwise OR first register with bitwise NOT of second register",
+    "mutations": "\\forall i \\in \\N_{64} : \\bits{\\reg'_D}_i = \\bits{\\reg_A}_i \\vee \\lnot \\bits{\\reg_B}_i",
     "opcode": 225,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2223,7 +2357,8 @@
   },
   {
     "name": "xnor",
-    "description": "Xnor",
+    "description": "Bitwise XNOR (NOT XOR) two registers, store result in destination",
+    "mutations": "\\forall i \\in \\N_{64} : \\bits{\\reg'_D}_i = \\lnot ( \\bits{\\reg_A}_i \\oplus \\bits{\\reg_B}_i )",
     "opcode": 226,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2237,7 +2372,8 @@
   },
   {
     "name": "max",
-    "description": "Maximum",
+    "description": "Store maximum of two registers (signed comparison) in destination",
+    "mutations": "\\reg'_D = \\unsigned{\\max ( \\signed{\\reg_A}, \\signed{\\reg_B} )}",
     "opcode": 227,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2251,7 +2387,8 @@
   },
   {
     "name": "max_u",
-    "description": "Maximum unsigned",
+    "description": "Store maximum of two registers (unsigned comparison) in destination",
+    "mutations": "\\reg'_D = \\max ( \\reg_A, \\reg_B )",
     "opcode": 228,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2265,7 +2402,8 @@
   },
   {
     "name": "min",
-    "description": "Minimum",
+    "description": "Store minimum of two registers (signed comparison) in destination",
+    "mutations": "\\reg'_D = \\unsigned{\\min ( \\signed{\\reg_A}, \\signed{\\reg_B} )}",
     "opcode": 229,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",
@@ -2279,7 +2417,8 @@
   },
   {
     "name": "min_u",
-    "description": "Minimum unsigned",
+    "description": "Store minimum of two registers (unsigned comparison) in destination",
+    "mutations": "\\reg'_D = \\min ( \\reg_A, \\reg_B )",
     "opcode": 230,
     "category": "RRR",
     "categoryDescription": "Instructions with arguments of three register",

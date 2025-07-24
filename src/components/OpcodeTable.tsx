@@ -16,6 +16,7 @@ import {
   getInstructionSetByVersion,
 } from "@/lib/instructions";
 import { useVersion } from "@/contexts/VersionContext";
+import katex from "katex";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface OpcodeTableProps {}
@@ -131,15 +132,23 @@ function OpcodeExpandedDetails({
           {opcode.argumentTypes.length > 0 && (
             <div>
               <div className="text-sm font-medium text-muted-foreground mb-2">
-                Arguments ({opcode.argumentTypes.reduce((total, arg) => total + arg.count, 0)})
+                Arguments (
+                {opcode.argumentTypes.reduce(
+                  (total, arg) => total + arg.count,
+                  0
+                )}
+                )
               </div>
               <div className="grid gap-2">
-                {opcode.argumentTypes.flatMap((argType, typeIndex) => 
+                {opcode.argumentTypes.flatMap((argType, typeIndex) =>
                   Array.from({ length: argType.count }, (_, countIndex) => {
-                    const globalIndex = opcode.argumentTypes
-                      .slice(0, typeIndex)
-                      .reduce((sum, prevArg) => sum + prevArg.count, 0) + countIndex + 1;
-                    
+                    const globalIndex =
+                      opcode.argumentTypes
+                        .slice(0, typeIndex)
+                        .reduce((sum, prevArg) => sum + prevArg.count, 0) +
+                      countIndex +
+                      1;
+
                     return (
                       <div
                         key={`${typeIndex}-${countIndex}`}
@@ -166,34 +175,89 @@ function OpcodeExpandedDetails({
             </div>
           )}
 
-          {/* Usage Example */}
-          <div>
-            <div className="text-sm font-medium text-muted-foreground mb-2">
-              Usage
+          {/* Mutations */}
+          {opcode.mutations && (
+            <div>
+              <div className="text-sm font-medium text-muted-foreground mb-2">
+                Mutations
+              </div>
+              <div className="bg-muted p-3 rounded text-sm border">
+                <div
+                  className="katex-display"
+                  dangerouslySetInnerHTML={{
+                    __html: katex.renderToString(opcode.mutations, {
+                      displayMode: true,
+                      throwOnError: false,
+                      errorColor: "#cc0000",
+                      macros: {
+                        "\\panic": "\\text{panic}",
+                        "\\host": "\\text{host}",
+                        "\\immed": "\\nu",
+                        "\\immed_X": "\\nu_X",
+                        "\\immed_Y": "\\nu_Y",
+                        "\\reg": "\\omega",
+                        "\\reg_A": "\\omega_A",
+                        "\\reg_B": "\\omega_B",
+                        "\\reg'_A": "\\omega'_A",
+                        "\\mem": "\\text{mem}",
+                        "\\memwr": "\\mu^{\\circlearrowright}",
+                        "\\memr": "\\mu^{\\circlearrowleft}",
+                        "\\branch": "\\text{branch}",
+                        "\\djump": "\\text{djump}",
+                        "\\sext": "\\chi",
+                        "\\sext_1": "\\chi_1",
+                        "\\sext_2": "\\chi_2",
+                        "\\sext_4": "\\chi_4",
+                        "\\bits": "\\text{bits}",
+                        "\\signed": "\\text{signed}",
+                        "\\unsigned": "\\text{unsigned}",
+                        "\\rtz": "\\text{rtz}",
+                        "\\smod": "\\text{smod}",
+                        "\\de": "\\mathcal{E}",
+                        "\\de_2": "\\mathcal{E}_2",
+                        "\\de_4": "\\mathcal{E}_4",
+                        "\\de_8": "\\mathcal{E}_8",
+                        "\\se": "\\mathcal{E}",
+                        "\\se_2": "\\mathcal{E}_2",
+                        "\\se_4": "\\mathcal{E}_4",
+                        "\\se_8": "\\mathcal{E}_8",
+                        "\\varepsilon": "\\epsilon",
+                        "\\signedn": "\\text{signed}_{#1}",
+                        "\\bitsfunc": "\\text{bits}_{#1}",
+                        "\\revbitsfunc": "\\text{revbits}_{#1}",
+                        "\\floor": "\\lfloor #1 \\rfloor",
+                        "\\when": "\\text{when}",
+                        "\\otherwise": "\\text{otherwise}",
+                        "\\where": "\\text{where}",
+                        "\\dots": "\\ldots",
+                        "\\token": "\\text{#1}",
+                        "\\top": "\\top",
+                        "\\times": "\\times",
+                        "\\bmod": "\\bmod",
+                        "\\wedge": "\\wedge",
+                        "\\vee": "\\vee",
+                        "\\oplus": "\\oplus",
+                        "\\lnot": "\\lnot",
+                        "\\cdot": "\\cdot",
+                        "\\div": "\\div",
+                        "\\ne": "\\ne",
+                        "\\le": "\\le",
+                        "\\ge": "\\ge",
+                        "\\min": "\\min",
+                        "\\max": "\\max",
+                        "\\sum": "\\sum",
+                        "\\forall": "\\forall",
+                        "\\exists": "\\exists",
+                        "\\in": "\\in",
+                        "\\subseteq": "\\subseteq",
+                        "\\equiv": "\\equiv",
+                      },
+                    }),
+                  }}
+                />
+              </div>
             </div>
-            <div className="bg-muted p-3 rounded font-mono text-sm border">
-              {opcode.name}
-              {opcode.argumentTypes.length > 0 && (
-                <span className="text-muted-foreground">
-                  {" "}
-                  {opcode.argumentTypes.map((argType, index) => (
-                    <span
-                      key={index}
-                      className={getArgumentColor(argType.type)}
-                    >
-                      {Array.from(
-                        { length: argType.count },
-                        (_, i) =>
-                          getArgumentPlaceholder(argType.type) +
-                          (i > 0 ? (i + 1).toString() : "")
-                      ).join(", ")}
-                      {index < opcode.argumentTypes.length - 1 ? ", " : ""}
-                    </span>
-                  ))}
-                </span>
-              )}
-            </div>
-          </div>
+          )}
         </div>
       </td>
     </tr>
@@ -342,10 +406,22 @@ export function OpcodeTable({}: OpcodeTableProps) {
     }
     // Use Unicode superscript characters
     const superscriptMap: { [key: string]: string } = {
-      '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
-      '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'
+      "0": "⁰",
+      "1": "¹",
+      "2": "²",
+      "3": "³",
+      "4": "⁴",
+      "5": "⁵",
+      "6": "⁶",
+      "7": "⁷",
+      "8": "⁸",
+      "9": "⁹",
     };
-    const superscriptCount = arg.count.toString().split('').map(digit => superscriptMap[digit] || digit).join('');
+    const superscriptCount = arg.count
+      .toString()
+      .split("")
+      .map((digit) => superscriptMap[digit] || digit)
+      .join("");
     return `${arg.type}${superscriptCount}`;
   };
 
