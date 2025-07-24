@@ -103,8 +103,16 @@ function OpcodeExpandedDetails({
           <div className="text-sm">{opcode.description}</div>
         </div>
         <div className="p-3 sm:p-4 space-y-4">
+          {/* Description */}
+          <div className="mb-4">
+            <div className="text-sm font-medium text-muted-foreground mb-1">
+              Description
+            </div>
+            <p className="text-sm">{opcode.description}</p>
+          </div>
+
           {/* Basic Info Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <div className="text-sm font-medium text-muted-foreground mb-1">
                 Opcode
@@ -116,12 +124,6 @@ function OpcodeExpandedDetails({
                 Decimal
               </div>
               <span className="font-mono">{opcode.opcode}</span>
-            </div>
-            <div>
-              <div className="text-sm font-medium text-muted-foreground mb-1">
-                Type
-              </div>
-              <span className="text-sm">{opcode.categoryDescription}</span>
             </div>
           </div>
 

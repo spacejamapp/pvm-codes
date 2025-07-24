@@ -54,14 +54,16 @@ export function Header() {
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <div className="container flex h-14 items-center justify-between px-6">
-        <div className="flex items-center min-w-0 flex-1">
+      <div className="container flex h-14 items-center justify-between px-4 sm:px-6 max-w-7xl mx-auto">
+        {/* Left side - Logo/Title */}
+        <div className="flex items-center">
           <h1 className="text-base sm:text-lg font-semibold">PVM Codes</h1>
         </div>
 
-        <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1 justify-end">
+        {/* Right side - Controls */}
+        <div className="flex items-center space-x-3 sm:space-x-4">
           <Select value={selectedVersion} onValueChange={setSelectedVersion}>
-            <SelectTrigger className="w-24 sm:w-32 text-sm">
+            <SelectTrigger className="w-20 sm:w-28 text-sm">
               <SelectValue placeholder="Version" />
             </SelectTrigger>
             <SelectContent>
