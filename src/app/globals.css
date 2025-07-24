@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(0 0% 100%);
+  --color-foreground: hsl(224 71.4% 4.1%);
+  --color-card: hsl(0 0% 100%);
+  --color-card-foreground: hsl(224 71.4% 4.1%);
+  --color-popover: hsl(0 0% 100%);
+  --color-popover-foreground: hsl(224 71.4% 4.1%);
+  --color-primary: hsl(220.9 39.3% 11%);
+  --color-primary-foreground: hsl(210 20% 98%);
+  --color-secondary: hsl(220 14.3% 95.9%);
+  --color-secondary-foreground: hsl(220.9 39.3% 11%);
+  --color-muted: hsl(220 14.3% 95.9%);
+  --color-muted-foreground: hsl(220 8.9% 46.1%);
+  --color-accent: hsl(220 14.3% 95.9%);
+  --color-accent-foreground: hsl(220.9 39.3% 11%);
+  --color-destructive: hsl(0 84.2% 60.2%);
+  --color-destructive-foreground: hsl(210 20% 98%);
+  --color-border: hsl(220 13% 91%);
+  --color-input: hsl(220 13% 91%);
+  --color-ring: hsl(224 71.4% 4.1%);
+  --radius: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: hsl(224 71.4% 4.1%);
+    --color-foreground: hsl(210 20% 98%);
+    --color-card: hsl(224 71.4% 4.1%);
+    --color-card-foreground: hsl(210 20% 98%);
+    --color-popover: hsl(224 71.4% 4.1%);
+    --color-popover-foreground: hsl(210 20% 98%);
+    --color-primary: hsl(210 20% 98%);
+    --color-primary-foreground: hsl(220.9 39.3% 11%);
+    --color-secondary: hsl(215 27.9% 16.9%);
+    --color-secondary-foreground: hsl(210 20% 98%);
+    --color-muted: hsl(215 27.9% 16.9%);
+    --color-muted-foreground: hsl(217.9 10.6% 64.9%);
+    --color-accent: hsl(215 27.9% 16.9%);
+    --color-accent-foreground: hsl(210 20% 98%);
+    --color-destructive: hsl(0 62.8% 30.6%);
+    --color-destructive-foreground: hsl(210 20% 98%);
+    --color-border: hsl(215 27.9% 16.9%);
+    --color-input: hsl(215 27.9% 16.9%);
+    --color-ring: hsl(216 12.2% 83.9%);
+  }
+}
+
+/* Base styles */
+* {
+  border-color: var(--color-border);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Custom component styles */
+.opcode-table-row:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+  transition: background-color 200ms;
+}
+
+.opcode-hex {
+  background-color: var(--color-muted);
+  color: var(--color-foreground);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875rem;
+  border: 1px solid var(--color-border);
+}
+
+.opcode-name {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-weight: 600;
+  color: hsl(220 90% 56%);
+}
+
+.dark .opcode-name {
+  color: hsl(220 90% 66%);
+}
+
+.category-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  border: 1px solid var(--color-border);
+}
+
+.search-input {
+  transition: all 200ms;
+}
+
+.search-input:focus {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.stats-card {
+  transition: all 200ms;
+}
+
+.stats-card:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  transform: scale(1.05);
+}
+
+.table-header {
+  background-color: color-mix(in srgb, var(--color-muted) 50%, transparent);
+  position: sticky;
+  top: 0;
+}
