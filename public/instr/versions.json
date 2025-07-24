@@ -1,11 +1,6 @@
 {
   "versions": [
     {
-      "version": "0.5.4",
-      "file": "v0.5.4.json",
-      "count": 139
-    },
-    {
       "version": "0.6.7",
       "file": "v0.6.7.json",
       "count": 139

@@ -131,29 +131,37 @@ function OpcodeExpandedDetails({
           {opcode.argumentTypes.length > 0 && (
             <div>
               <div className="text-sm font-medium text-muted-foreground mb-2">
-                Arguments ({opcode.argumentTypes.length})
+                Arguments ({opcode.argumentTypes.reduce((total, arg) => total + arg.count, 0)})
               </div>
               <div className="grid gap-2">
-                {opcode.argumentTypes.map((argType, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 p-2 bg-background rounded border"
-                  >
-                    <div className="bg-muted px-2 py-1 rounded text-xs font-medium w-6 text-center">
-                      {index + 1}
-                    </div>
-                    <div
-                      className={`font-medium ${getArgumentColor(
-                        argType.type
-                      )} min-w-24`}
-                    >
-                      {formatArgumentType(argType)}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      {getArgumentDescription(argType.type)}
-                    </div>
-                  </div>
-                ))}
+                {opcode.argumentTypes.flatMap((argType, typeIndex) => 
+                  Array.from({ length: argType.count }, (_, countIndex) => {
+                    const globalIndex = opcode.argumentTypes
+                      .slice(0, typeIndex)
+                      .reduce((sum, prevArg) => sum + prevArg.count, 0) + countIndex + 1;
+                    
+                    return (
+                      <div
+                        key={`${typeIndex}-${countIndex}`}
+                        className="flex items-center gap-3 p-2 bg-background rounded border"
+                      >
+                        <div className="bg-muted px-2 py-1 rounded text-xs font-medium w-6 text-center">
+                          {globalIndex}
+                        </div>
+                        <div
+                          className={`font-medium ${getArgumentColor(
+                            argType.type
+                          )} min-w-24`}
+                        >
+                          {argType.type}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {getArgumentDescription(argType.type)}
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </div>
           )}
@@ -271,15 +279,15 @@ export function OpcodeTable({}: OpcodeTableProps) {
   const getArgumentBadgeColor = (argType: string) => {
     switch (argType) {
       case "register":
-        return "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800";
+        return "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-700";
       case "immediate":
-        return "bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800";
+        return "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-200 dark:border-green-700";
       case "offset":
-        return "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:border-purple-800";
+        return "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900/30 dark:text-purple-200 dark:border-purple-700";
       case "extended-immediate":
-        return "bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800";
+        return "bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-900/30 dark:text-orange-200 dark:border-orange-700";
       default:
-        return "bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-900/20 dark:text-gray-300 dark:border-gray-800";
+        return "bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-900/30 dark:text-gray-200 dark:border-gray-700";
     }
   };
 
@@ -332,7 +340,13 @@ export function OpcodeTable({}: OpcodeTableProps) {
     if (arg.count === 1) {
       return arg.type;
     }
-    return `${arg.type} ^ ${arg.count}`;
+    // Use Unicode superscript characters
+    const superscriptMap: { [key: string]: string } = {
+      '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+      '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'
+    };
+    const superscriptCount = arg.count.toString().split('').map(digit => superscriptMap[digit] || digit).join('');
+    return `${arg.type}${superscriptCount}`;
   };
 
   return (
