@@ -27,7 +27,7 @@ export interface ProcessedOpcode extends Opcode {
   categoryDescription: string;
   argumentTypes: ArgumentType[];
   hexOpcode: string;
-  mutations: string;
+  mutations: string | null;
 }
 
 export interface VersionInfo {

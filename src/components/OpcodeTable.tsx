@@ -176,7 +176,7 @@ function OpcodeExpandedDetails({
           )}
 
           {/* Mutations */}
-          {opcode.mutations && (
+          {opcode.mutations && opcode.mutations.trim() !== "" && (
             <div>
               <div className="text-sm font-medium text-muted-foreground mb-2">
                 Mutations
@@ -185,74 +185,153 @@ function OpcodeExpandedDetails({
                 <div
                   className="katex-display"
                   dangerouslySetInnerHTML={{
-                    __html: katex.renderToString(opcode.mutations, {
-                      displayMode: true,
-                      throwOnError: false,
-                      errorColor: "#cc0000",
-                      macros: {
-                        "\\panic": "\\text{panic}",
-                        "\\host": "\\text{host}",
-                        "\\immed": "\\nu",
-                        "\\immed_X": "\\nu_X",
-                        "\\immed_Y": "\\nu_Y",
-                        "\\reg": "\\omega",
-                        "\\reg_A": "\\omega_A",
-                        "\\reg_B": "\\omega_B",
-                        "\\reg'_A": "\\omega'_A",
-                        "\\mem": "\\text{mem}",
-                        "\\memwr": "\\mu^{\\circlearrowright}",
-                        "\\memr": "\\mu^{\\circlearrowleft}",
-                        "\\branch": "\\text{branch}",
-                        "\\djump": "\\text{djump}",
-                        "\\sext": "\\chi",
-                        "\\sext_1": "\\chi_1",
-                        "\\sext_2": "\\chi_2",
-                        "\\sext_4": "\\chi_4",
-                        "\\bits": "\\text{bits}",
-                        "\\signed": "\\text{signed}",
-                        "\\unsigned": "\\text{unsigned}",
-                        "\\rtz": "\\text{rtz}",
-                        "\\smod": "\\text{smod}",
-                        "\\de": "\\mathcal{E}",
-                        "\\de_2": "\\mathcal{E}_2",
-                        "\\de_4": "\\mathcal{E}_4",
-                        "\\de_8": "\\mathcal{E}_8",
-                        "\\se": "\\mathcal{E}",
-                        "\\se_2": "\\mathcal{E}_2",
-                        "\\se_4": "\\mathcal{E}_4",
-                        "\\se_8": "\\mathcal{E}_8",
-                        "\\varepsilon": "\\epsilon",
-                        "\\signedn": "\\text{signed}_{#1}",
-                        "\\bitsfunc": "\\text{bits}_{#1}",
-                        "\\revbitsfunc": "\\text{revbits}_{#1}",
-                        "\\floor": "\\lfloor #1 \\rfloor",
-                        "\\when": "\\text{when}",
-                        "\\otherwise": "\\text{otherwise}",
-                        "\\where": "\\text{where}",
-                        "\\dots": "\\ldots",
-                        "\\token": "\\text{#1}",
-                        "\\top": "\\top",
-                        "\\times": "\\times",
-                        "\\bmod": "\\bmod",
-                        "\\wedge": "\\wedge",
-                        "\\vee": "\\vee",
-                        "\\oplus": "\\oplus",
-                        "\\lnot": "\\lnot",
-                        "\\cdot": "\\cdot",
-                        "\\div": "\\div",
-                        "\\ne": "\\ne",
-                        "\\le": "\\le",
-                        "\\ge": "\\ge",
-                        "\\min": "\\min",
-                        "\\max": "\\max",
-                        "\\sum": "\\sum",
-                        "\\forall": "\\forall",
-                        "\\exists": "\\exists",
-                        "\\in": "\\in",
-                        "\\subseteq": "\\subseteq",
-                        "\\equiv": "\\equiv",
-                      },
-                    }),
+                    __html: (() => {
+                      try {
+                        const rendered = katex.renderToString(
+                          opcode.mutations,
+                          {
+                            displayMode: true,
+                            throwOnError: false,
+                            errorColor: "#cc0000",
+                            macros: {
+                              // Core PVM macros from tex specification
+                              "\\panic": "\\text{panic}",
+                              "\\host": "\\text{host}",
+                              "\\immed": "\\nu",
+                              "\\immed_X": "\\nu_X",
+                              "\\immed_Y": "\\nu_Y",
+                              "\\reg": "\\omega",
+                              "\\reg_A": "\\omega_A",
+                              "\\reg_B": "\\omega_B",
+                              "\\reg_D": "\\omega_D",
+                              "\\reg'_A": "\\omega'_A",
+                              "\\reg'_B": "\\omega'_B",
+                              "\\reg'_D": "\\omega'_D",
+                              "\\mem": "\\text{mem}",
+                              "\\memory": "\\text{mem}",
+                              "\\memwr": "\\mu^{\\circlearrowright}",
+                              "\\memr": "\\mu^{\\circlearrowleft}",
+                              "\\branch": "\\text{branch}",
+                              "\\djump": "\\text{djump}",
+
+                              // Sign extension functions
+                              "\\sext": "\\chi",
+                              "\\sext_1": "\\chi_1",
+                              "\\sext_2": "\\chi_2",
+                              "\\sext_4": "\\chi_4",
+                              "\\sext_8": "\\chi_8",
+
+                              // Bit manipulation functions from tex
+                              "\\bits": "\\mathcal{B}",
+                              "\\bitsfunc": "\\mathcal{B}_{#1}",
+                              "\\revbitsfunc":
+                                "\\overleftarrow{\\mathcal{B}}_{#1}",
+                              "\\unbitsfunc": "\\mathcal{B}_{#1}^{-1}",
+                              "\\revunbitsfunc":
+                                "\\overleftarrow{\\mathcal{B}}_{#1}^{-1}",
+
+                              // Sign conversion functions
+                              "\\signed": "\\mathcal{Z}",
+                              "\\unsigned": "\\mathcal{Z}^{-1}",
+                              "\\signedn": "\\mathcal{Z}_{#1}",
+                              "\\unsignedn": "\\mathcal{Z}_{#1}^{-1}",
+                              "\\signfunc": "\\mathcal{Z}_{#1}",
+                              "\\unsignfunc": "\\mathcal{Z}_{#1}^{-1}",
+
+                              // Encoding/decoding functions
+                              "\\de": "\\mathcal{E}",
+                              "\\de_1": "\\mathcal{E}_1",
+                              "\\de_2": "\\mathcal{E}_2",
+                              "\\de_4": "\\mathcal{E}_4",
+                              "\\de_8": "\\mathcal{E}_8",
+                              "\\se": "\\mathcal{E}",
+                              "\\se_1": "\\mathcal{E}_1",
+                              "\\se_2": "\\mathcal{E}_2",
+                              "\\se_4": "\\mathcal{E}_4",
+                              "\\se_8": "\\mathcal{E}_8",
+
+                              // Special functions
+                              "\\rtz": "\\text{rtz}",
+                              "\\smod": "\\text{smod}",
+                              "\\deblob": "\\text{deblob}",
+
+                              // VM state symbols
+                              "\\varepsilon": "\\epsilon",
+                              "\\continue": "\\blacktriangleright",
+                              "\\instructions": "\\zeta",
+                              "\\basicblocks": "\\varpi",
+                              "\\gas": "\\text{gas}_\\Delta",
+                              "\\instrlen": "\\ell",
+
+                              // Memory and register notations
+                              "\\ram": "\\mathbb{M}",
+                              "\\regs": "\\text{regs}",
+                              "\\registers": "\\text{regs}",
+                              "\\mathbb{V}": "\\mathbb{V}",
+                              "\\mathbb{V}^*": "\\mathbb{V}^*",
+                              "\\N_R": "\\mathbb{N}_R",
+                              "\\N": "\\mathbb{N}",
+                              "\\Z": "\\mathbb{Z}",
+                              "\\mathbb{B}": "\\mathbb{B}",
+
+                              // Token definitions
+                              "\\token": "\\text{#1}",
+                              "\\RA": "\\text{RA}",
+                              "\\SP": "\\text{SP}",
+                              "\\T": "\\text{T}",
+                              "\\S": "\\text{S}",
+                              "\\A": "\\text{A}",
+
+                              // Mathematical operators and relations
+                              "\\floor": "\\lfloor #1 \\rfloor",
+                              "\\ceil": "\\lceil #1 \\rceil",
+                              "\\when": "\\text{ when }",
+                              "\\otherwise": "\\text{ otherwise }",
+                              "\\where": "\\text{ where }",
+                              "\\dots": "\\ldots",
+                              // Custom text macros
+                              "\\using": "\\text{using }",
+                              "\\nicefrac": "\\frac{#1}{#2}",
+                              "\\ffrac":
+                                "\\left\\lfloor\\frac{#1}{#2}\\right\\rfloor",
+                            },
+                          }
+                        );
+
+                        // Debug log for successful renders
+                        if (
+                          opcode.name.includes("store") &&
+                          !rendered.includes("katex-error")
+                        ) {
+                          console.log(
+                            "Successfully rendered mutation for",
+                            opcode.name,
+                            ":",
+                            opcode.mutations
+                          );
+                        }
+
+                        return rendered;
+                      } catch (error) {
+                        console.error(
+                          "KaTeX rendering error for opcode",
+                          opcode.name + ":",
+                          opcode.mutations,
+                          error
+                        );
+                        return `<div style="color: red; font-family: monospace; font-size: 12px; padding: 8px; background: #fee; border: 1px solid #f99;">
+                          <div><strong>KaTeX Error for ${
+                            opcode.name
+                          }:</strong></div>
+                          <div>LaTeX: ${opcode.mutations}</div>
+                          <div>Error: ${
+                            error instanceof Error
+                              ? error.message
+                              : "Unknown error"
+                          }</div>
+                        </div>`;
+                      }
+                    })(),
                   }}
                 />
               </div>
