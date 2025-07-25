@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import {
   ProcessedOpcode,
   ArgumentType,
@@ -24,7 +25,9 @@ interface OpcodeTableProps {}
 interface OpcodeRowProps {
   opcode: ProcessedOpcode;
   onClick: () => void;
-  getArgumentBadgeColor: (argType: string) => string;
+  getArgumentBadgeVariant: (
+    argType: string
+  ) => "secondary" | "default" | "outline" | "destructive";
   formatArgumentType: (arg: ArgumentType) => string;
 }
 
@@ -32,25 +35,24 @@ interface OpcodeExpandedDetailsProps {
   opcode: ProcessedOpcode;
   getArgumentColor: (argType: string) => string;
   getArgumentDescription: (argType: string) => string;
-  getArgumentPlaceholder: (argType: string) => string;
-  formatArgumentType: (arg: ArgumentType) => string;
 }
 
 interface OpcodeTableItemProps {
   opcode: ProcessedOpcode;
   isExpanded: boolean;
   onToggle: () => void;
-  getArgumentBadgeColor: (argType: string) => string;
+  getArgumentBadgeVariant: (
+    argType: string
+  ) => "secondary" | "default" | "outline" | "destructive";
   getArgumentColor: (argType: string) => string;
   getArgumentDescription: (argType: string) => string;
-  getArgumentPlaceholder: (argType: string) => string;
   formatArgumentType: (arg: ArgumentType) => string;
 }
 
 function OpcodeRow({
   opcode,
   onClick,
-  getArgumentBadgeColor,
+  getArgumentBadgeVariant,
   formatArgumentType,
 }: OpcodeRowProps) {
   return (
@@ -72,14 +74,12 @@ function OpcodeRow({
             <span className="text-xs text-muted-foreground">None</span>
           ) : (
             opcode.argumentTypes.map((argType, index) => (
-              <span
+              <Badge
                 key={index}
-                className={`px-2 py-1 rounded-full text-xs font-medium border ${getArgumentBadgeColor(
-                  argType.type
-                )}`}
+                variant={getArgumentBadgeVariant(argType.type)}
               >
                 {formatArgumentType(argType)}
-              </span>
+              </Badge>
             ))
           )}
         </div>
@@ -92,8 +92,6 @@ function OpcodeExpandedDetails({
   opcode,
   getArgumentColor,
   getArgumentDescription,
-  getArgumentPlaceholder,
-  formatArgumentType,
 }: OpcodeExpandedDetailsProps) {
   return (
     <tr className="bg-muted/30">
@@ -347,10 +345,9 @@ function OpcodeTableItem({
   opcode,
   isExpanded,
   onToggle,
-  getArgumentBadgeColor,
+  getArgumentBadgeVariant,
   getArgumentColor,
   getArgumentDescription,
-  getArgumentPlaceholder,
   formatArgumentType,
 }: OpcodeTableItemProps) {
   const rows = [
@@ -358,7 +355,7 @@ function OpcodeTableItem({
       key={`${opcode.opcode}-main`}
       opcode={opcode}
       onClick={onToggle}
-      getArgumentBadgeColor={getArgumentBadgeColor}
+      getArgumentBadgeVariant={getArgumentBadgeVariant}
       formatArgumentType={formatArgumentType}
     />,
   ];
@@ -370,8 +367,6 @@ function OpcodeTableItem({
         opcode={opcode}
         getArgumentColor={getArgumentColor}
         getArgumentDescription={getArgumentDescription}
-        getArgumentPlaceholder={getArgumentPlaceholder}
-        formatArgumentType={formatArgumentType}
       />
     );
   }
@@ -419,18 +414,18 @@ export function OpcodeTable({}: OpcodeTableProps) {
     });
   }, [opcodes, search, selectedCategory]);
 
-  const getArgumentBadgeColor = (argType: string) => {
+  const getArgumentBadgeVariant = (argType: string) => {
     switch (argType) {
       case "register":
-        return "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-700";
+        return "secondary";
       case "immediate":
-        return "bg-green-100 text-green-800 border-green-300 dark:bg-green-900/30 dark:text-green-200 dark:border-green-700";
+        return "default";
       case "offset":
-        return "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900/30 dark:text-purple-200 dark:border-purple-700";
+        return "outline";
       case "extended-immediate":
-        return "bg-orange-100 text-orange-800 border-orange-300 dark:bg-orange-900/30 dark:text-orange-200 dark:border-orange-700";
+        return "destructive";
       default:
-        return "bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-900/30 dark:text-gray-200 dark:border-gray-700";
+        return "secondary";
     }
   };
 
@@ -461,21 +456,6 @@ export function OpcodeTable({}: OpcodeTableProps) {
         return "An extended-width immediate value";
       default:
         return "Unknown argument type";
-    }
-  };
-
-  const getArgumentPlaceholder = (argType: string): string => {
-    switch (argType) {
-      case "register":
-        return "reg";
-      case "immediate":
-        return "imm";
-      case "offset":
-        return "offset";
-      case "extended-immediate":
-        return "ext_imm";
-      default:
-        return "arg";
     }
   };
 
@@ -579,10 +559,9 @@ export function OpcodeTable({}: OpcodeTableProps) {
                         expandedOpcode === opcode.opcode ? null : opcode.opcode
                       );
                     }}
-                    getArgumentBadgeColor={getArgumentBadgeColor}
+                    getArgumentBadgeVariant={getArgumentBadgeVariant}
                     getArgumentColor={getArgumentColor}
                     getArgumentDescription={getArgumentDescription}
-                    getArgumentPlaceholder={getArgumentPlaceholder}
                     formatArgumentType={formatArgumentType}
                   />
                 ))}
